@@ -1,24 +1,35 @@
 version: "2"
 services:
+   jupyterlab:
+      image: brunocu/hadoop
+      container_name: jupyterlab
+      command: "pyspark" 
+      environment:
+        PYSPARK_DRIVER_PYTHON_OPTS: "lab --notebook-dir=/var/jupyter/ --ip='*' --no-browser"
+      ports:
+        - 8888:8888
+      env_file:
+        - ./hadoop.env
    namenode:
-      image: apache/hadoop:3
+      image: brunocu/hadoop
       hostname: namenode
       container_name: namenode
       command: ["hdfs", "namenode"]
       ports:
         - 9870:9870
+        - 4040:4040
       env_file:
         - ./hadoop.env
       environment:
           ENSURE_NAMENODE_DIR: "/tmp/hadoop-root/dfs/name"
    datanode:
-      image: apache/hadoop:3
+      image: brunocu/hadoop
       container_name: datanode
       command: ["hdfs", "datanode"]
       env_file:
         - ./hadoop.env      
    resourcemanager:
-      image: apache/hadoop:3
+      image: brunocu/hadoop
       hostname: resourcemanager
       container_name: resourcemanager
       command: ["yarn", "resourcemanager"]
@@ -27,7 +38,7 @@ services:
       env_file:
         - ./hadoop.env
    nodemanager:
-      image: apache/hadoop:3
+      image: brunocu/hadoop
       container_name: nodemanager
       command: ["yarn", "nodemanager"]
       env_file:
